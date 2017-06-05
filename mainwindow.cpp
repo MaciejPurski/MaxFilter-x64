@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 #include <iostream>
-#include<fstream>
+#include <fstream>
 
+//gui init
 MainWindow::MainWindow()
 {
     inputBuf=nullptr;
@@ -36,7 +37,7 @@ MainWindow::MainWindow()
 }
 
 MainWindow::~MainWindow()
-{
+{   // free buffers
     if(inputBuf!=nullptr)
         delete [] inputBuf;
     if(outputBuf!=nullptr)
@@ -48,33 +49,34 @@ MainWindow::~MainWindow()
 
 void MainWindow::open()
 {
-
     if(isOpened==true)
     {
         delete [] inputBuf;
         delete [] outputBuf;
     }
+    // read file path from test field
     std::string fname=lineEdit->text().toStdString();
     std::ifstream file (fname, std::ifstream::binary);
     length=0;
     if (!file.good())
     {
-        std::cout<<"FAIL\n";
+        qDebug()<<"FAIL\n";
         return;
     }
 
-        // get length of file:
-
+    // get length of file:
     file.ignore( std::numeric_limits<std::streamsize>::max() );
     std::streamsize length2 = file.gcount();
     file.clear();   //  Since ignore will have set eof.
     file.seekg( 0, std::ios_base::beg );
     length=(int)length2;
 
+    //allocate buffers
     inputBuf = new uchar [length];
     outputBuf = new uchar[length];
     char* temp = reinterpret_cast<char*> (inputBuf);
 
+    //read first file and copy header
     file.read(temp, length);
     file.close();
     for(int i=0; i<54; i++)
@@ -82,37 +84,29 @@ void MainWindow::open()
 
     isOpened=true;
 
-
     slider->setValue(0);
-
+    //load file from buffer in order to show it on the screen
     pixbuffer.loadFromData(inputBuf, length, "bmp");
-
 
     label3->setPixmap(pixbuffer);
     layoutMain->addWidget(label3);
 
-
+    //filter image on changing value of the slider
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(filter(int)));
-
 }
 
 
 void MainWindow::filter(int frame)
 {
-
     if(frame==0)
     {
-         label3->setPixmap(pixbuffer);
+        label3->setPixmap(pixbuffer);
         return;
-        }
-
-    int result = func(inputBuf, outputBuf, frame);
-
-
-        pixOut.loadFromData(outputBuf, length, "bmp");
-        label3->setPixmap(pixOut);
-
-
+    }
+    // perfrom filtering - call asm function
+    func(inputBuf, outputBuf, frame);
+    pixOut.loadFromData(outputBuf, length, "bmp");
+    label3->setPixmap(pixOut);
 }
 
 

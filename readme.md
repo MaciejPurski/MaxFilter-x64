@@ -1,4 +1,4 @@
-# Curves
+# MaxFilter-x64
 
 ## Description
 A simple project done using x86-64 assembler and C++/Qt for academic purpose.
@@ -9,18 +9,16 @@ GUI is very basic. It was made in Qt/C++.
 ## Build and run
 ### Requierments 
 * Linux OS
-* Qt libs
+* Qt5 libs 
 * nasm compiler
 
 ### Building procedure
-1. Build the project using 'gradle build' command
-2. Go to gradle build directory 'cd build/libs'
-3. Run either server or client: 
-* Server by typing `java -jar Curves-1.0.jar server port_number`.
-* Client by typing `java -jar Curves-1.0.jar client port_number`.
-* Port_number can be any free udp port apart from 9877
+1. Create Makefile by executing 'qmake'
+2. execute 'make'
+3. Run app './filtr'
 
-## Using program
+## Using app
+App is used simply by typing in file path. And clicking "open". Filtering takes place by moving the slider. File must have .bmp format with RGB colors.
 
 
 
