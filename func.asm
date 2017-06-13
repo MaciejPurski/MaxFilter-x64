@@ -12,12 +12,12 @@ global func
 ; rbp-16 - padding
 ; rbp-24 - bytes to omit when jumping down
 func:
-        push	rbp
         push    rbx
         push    r12
         push    r13
         push    r14
         push    r15
+        push	rbp
         mov	rbp, rsp
         sub     rsp, 16
         add     rsi, 54             ; move pointer to the pixel array
@@ -202,12 +202,13 @@ endRow:
         jnz     proceedRow
 
 
-mov     rsp, rbp
-pop     r15
-pop     r14
-pop     r13
-pop     r12
-pop     rbx
-pop	rbp
+        mov     rsp, rbp
+        pop	rbp
+        pop     r15
+        pop     r14
+        pop     r13
+        pop     r12
+        pop     rbx
 
-ret
+
+        ret
